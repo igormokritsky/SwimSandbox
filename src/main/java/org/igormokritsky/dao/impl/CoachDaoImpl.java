@@ -4,6 +4,7 @@ package org.igormokritsky.dao.impl;
 import org.apache.log4j.Logger;
 import org.igormokritsky.ConnectionHolder;
 import org.igormokritsky.DAOException;
+import org.igormokritsky.DBUtils;
 import org.igormokritsky.entity.Coach;
 import org.igormokritsky.dao.CoachesDao;
 
@@ -24,25 +25,19 @@ public class CoachDaoImpl implements CoachesDao {
     private static final String update = "UPDATE coaches SET name=?, awards=? WHERE id=?";
 
 
-
-    public CoachDaoImpl(Connection connection) {
-        this.connection = connection;
-    }
-
-
     static CoachesDao getInstance() {
         if(coachDao == null)
             coachDao = new CoachDaoImpl();
             return coachDao;
     }
 
-    private CoachDaoImpl() {
+    public CoachDaoImpl() {
 
     }
 
     @Override
     public Integer create(Coach coach) throws DAOException {
-        Connection connection;
+        Connection connection = null;
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
@@ -60,6 +55,9 @@ public class CoachDaoImpl implements CoachesDao {
         } catch (SQLException e) {
             LOG.error("Can not read", e);
             throw new DAOException(e.getMessage(), e);
+        } finally {
+            DBUtils.closeStatement(preparedStatement);
+            DBUtils.closeConnection(connection);
         }
         return null;
     }
