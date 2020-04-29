@@ -10,7 +10,7 @@ import java.io.IOException;
 
 
 
-public class coachServlet extends HttpServlet {
+public class СoachServlet extends HttpServlet {
 
 
     @Override
