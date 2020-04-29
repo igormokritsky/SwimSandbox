@@ -1,12 +1,9 @@
 package org.example.mysql;
 
-import org.igormokritsky.ConnectionHolder;
 import org.igormokritsky.DAOException;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.igormokritsky.entity.*;
-import java.sql.*;
 import static org.junit.Assert.*;
 import org.igormokritsky.dao.impl.CoachDaoImpl;
 
