@@ -1,7 +1,8 @@
 package org.igormokritsky.dao.impl;
 
-import org.igormokritsky.ConnectionHolder;
-import org.igormokritsky.DAOException;
+import  org.apache.log4j.Logger;
+import org.igormokritsky.db.ConnectionHolder;
+import org.igormokritsky.db.DAOException;
 import org.igormokritsky.dao.StylesDao;
 import org.igormokritsky.entity.Style;
 import java.sql.*;
@@ -9,13 +10,11 @@ import java.sql.*;
 public class StyleDaoImpl implements StylesDao {
 
     private static StyleDaoImpl styleDao;
-
-    final private static String insert = "INSERT INTO styles" + "(id, style_name) VALUES (?,?);";
-    final private static String update = "UPDATE styles SET style_name=? WHERE id=?";
-
-    public static void main(String[] args) {
-
-    }
+    private static final Logger LOG = Logger.getLogger(StyleDaoImpl.class);
+    private static final String INSERT = "INSERT INTO styles (id, style_name) VALUES (?,?);";
+    private static final String UPDATE = "UPDATE styles SET style_name=? WHERE id=?";
+    private static final String READ = "SELECT * FROM styles WHERE id=";
+    private static final String DELETE = "DELETE FROM styles WHERE id=";
 
 
     static StylesDao getInstance(){
@@ -31,15 +30,16 @@ public class StyleDaoImpl implements StylesDao {
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(insert);
+            preparedStatement = connection.prepareStatement(INSERT);
             connection.setAutoCommit(false);
 
             preparedStatement.setInt(1,style.getId());
-            preparedStatement.setString(2,style.getStyle_name());
+            preparedStatement.setString(2,style.getStyleName());
 
             connection.commit();
 
         }catch (SQLException e) {
+            LOG.error("Can not create", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -53,15 +53,16 @@ public class StyleDaoImpl implements StylesDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM styles WHERE id=" + id);
+            resultSet = statement.executeQuery(READ + id);
             connection.setAutoCommit(false);
             if(resultSet.next()){
                 Style style = new Style();
                 style.setId(resultSet.getInt("id"));
-                style.setStyle_name(resultSet.getString("style_name"));
+                style.setStyleName(resultSet.getString("style_name"));
             }
             connection.commit();
         }catch (SQLException e) {
+            LOG.error("Can not read", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -73,10 +74,10 @@ public class StyleDaoImpl implements StylesDao {
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(update);
+            preparedStatement = connection.prepareStatement(UPDATE);
             connection.setAutoCommit(false);
 
-            preparedStatement.setString(1,style.getStyle_name());
+            preparedStatement.setString(1,style.getStyleName());
             preparedStatement.setInt(2,style.getId());
 
             int i = preparedStatement.executeUpdate();
@@ -85,6 +86,7 @@ public class StyleDaoImpl implements StylesDao {
             }
             connection.commit();
         }catch (SQLException e) {
+            LOG.error("Can not update", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;
@@ -97,12 +99,13 @@ public class StyleDaoImpl implements StylesDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            int i = statement.executeUpdate("DELETE FROM styles WHERE id=" + id);
+            int i = statement.executeUpdate(DELETE + id);
 
             if (i == 1){
                 return true;
             }
         }catch (SQLException e) {
+            LOG.error("Can not delete", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;

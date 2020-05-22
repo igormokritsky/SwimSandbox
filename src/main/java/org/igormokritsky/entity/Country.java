@@ -2,26 +2,17 @@ package org.igormokritsky.entity;
 
 public class Country extends Entity{
 
-    private String country_name;
+    private String countryName;
 
     public Country() {
 
     }
 
-    public Country(Integer id, String country_name) {
-        this.id = id;
-        this.country_name = country_name;
+    public String getCountryName() {
+        return countryName;
     }
 
-
-
-
-
-    public String getCountry_name() {
-        return country_name;
-    }
-
-    public void setCountry_name(String country_name) {
-        this.country_name = country_name;
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 }

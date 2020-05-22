@@ -4,7 +4,7 @@ import org.igormokritsky.dao.*;
 
 public class MySqlDAOFactory {
 
-    public CoachesDao getCoachesDao(){
+    public CoachDao getCoachesDao(){
         return CoachDaoImpl.getInstance();
     }
 

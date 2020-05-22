@@ -7,42 +7,13 @@ public class Swimmer extends Entity {
     private String sex;
     private Integer weight;
     private Integer height;
-    private Integer user_id;
-    private Integer country_id;
-    private Integer coach_id;
+    private Integer userId;
+    private Integer countryId;
+    private Integer coachId;
 
     public Swimmer(){
 
     }
-
-    public Swimmer(String name, Integer age, String sex, Integer weight,
-                   Integer height, Integer user_id, Integer country_id, Integer coach_id) {
-        this.name = name;
-        this.age = age;
-        this.sex = sex;
-        this.weight = weight;
-        this.height = height;
-        this.user_id = user_id;
-        this.country_id = country_id;
-        this.coach_id = coach_id;
-    }
-
-    public Swimmer(Integer id, String name, Integer age, String sex,
-                   Integer weight, Integer height, Integer user_id, Integer country_id, Integer coach_id) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.sex = sex;
-        this.weight = weight;
-        this.height = height;
-        this.user_id = user_id;
-        this.country_id = country_id;
-        this.coach_id = coach_id;
-    }
-
-
-
-
 
     public String getName() {
         return name;
@@ -84,27 +55,27 @@ public class Swimmer extends Entity {
         this.height = height;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getCountry_id() {
-        return country_id;
+    public Integer getCountryId() {
+        return countryId;
     }
 
-    public void setCountry_id(Integer country_id) {
-        this.country_id = country_id;
+    public void setCountryId(Integer countryId) {
+        this.countryId = countryId;
     }
 
-    public Integer getCoach_id() {
-        return coach_id;
+    public Integer getCoachId() {
+        return coachId;
     }
 
-    public void setCoach_id(Integer coach_id) {
-        this.coach_id = coach_id;
+    public void setCoachId(Integer coachId) {
+        this.coachId = coachId;
     }
 }

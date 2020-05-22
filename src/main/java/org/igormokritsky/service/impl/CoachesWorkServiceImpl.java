@@ -1,19 +1,21 @@
 package org.igormokritsky.service.impl;
 
-import org.igormokritsky.DAOException;
-import org.igormokritsky.ServiceException;
-import org.igormokritsky.dao.CoachesDao;
+import org.igormokritsky.db.DAOException;
+import org.igormokritsky.db.ServiceException;
+import org.igormokritsky.dao.CoachDao;
 import org.igormokritsky.entity.Coach;
 import org.igormokritsky.service.CoachesWorkService;
-import org.igormokritsky.transactions.TransactionManager;
-import org.igormokritsky.transactions.TransactionalOperation;
+import org.igormokritsky.db.transactions.TransactionManager;
+import org.igormokritsky.db.transactions.TransactionalOperation;
+
+import java.util.List;
 
 public class CoachesWorkServiceImpl implements CoachesWorkService {
 
-    private final CoachesDao coachesDao;
+    private final CoachDao coachesDao;
     private final TransactionManager transactionManager;
 
-    public CoachesWorkServiceImpl(CoachesDao coachesDao, TransactionManager transactionManager) {
+    public CoachesWorkServiceImpl(CoachDao coachesDao, TransactionManager transactionManager) {
         this.coachesDao = coachesDao;
         this.transactionManager = transactionManager;
     }
@@ -34,7 +36,7 @@ public class CoachesWorkServiceImpl implements CoachesWorkService {
     }
 
     @Override
-    public void readCoach(final Integer id) {
+    public Coach readCoach(final Integer id) {
         try{
             transactionManager.executeTransaction(new TransactionalOperation<Coach>() {
                 @Override
@@ -46,6 +48,7 @@ public class CoachesWorkServiceImpl implements CoachesWorkService {
         } catch (DAOException e){
             throw new ServiceException(e.getMessage(), e);
         }
+        return null;
     }
 
     @Override
@@ -76,5 +79,18 @@ public class CoachesWorkServiceImpl implements CoachesWorkService {
         } catch (DAOException e){
             throw new ServiceException(e.getMessage(), e);
         }
+
+    }
+
+
+    @Override
+    public List<Coach> selectAll() {
+        List<Coach> coaches;
+        try{
+            coaches = transactionManager.executeTransaction(() -> coachesDao.selectAll());
+        } catch (DAOException e){
+            throw new ServiceException(e.getMessage(), e);
+        }
+        return coaches;
     }
 }

@@ -1,8 +1,9 @@
 package org.igormokritsky.dao.impl;
 
 
-import org.igormokritsky.ConnectionHolder;
-import org.igormokritsky.DAOException;
+import org.apache.log4j.Logger;
+import org.igormokritsky.db.ConnectionHolder;
+import org.igormokritsky.db.DAOException;
 import org.igormokritsky.dao.UsersDao;
 import org.igormokritsky.entity.User;
 import java.sql.Connection;
@@ -15,11 +16,13 @@ import java.util.List;
 public class UserDaoImpl implements UsersDao {
 
     private static UserDaoImpl userDao;
-
-    private static final String insert = "INSERT INTO swimmers" + "(id, username, email, phone, password) VALUES" +
+    private static final Logger LOG = Logger.getLogger(UserDaoImpl.class);
+    private static final String INSERT = "INSERT INTO users (id, username, email, phone, password) VALUES" +
             "(?,?,?,?,?);";
-    private static final String update = "UPDATE swimmers SET username=?, email=?, phone=?, password=? WHERE id=?";
-
+    private static final String UPDATE = "UPDATE users SET username=?, email=?, phone=?, password=? WHERE id=?";
+    private static final String READ = "SELECT * FROM users WHERE id=";
+    private static final String DELETE = "DELETE FROM users WHERE id=";
+    private static final String SELECT_ALL = "SELECT * FROM users";
 
     static UsersDao getInstance() {
         if(userDao == null) userDao = new UserDaoImpl();
@@ -35,7 +38,7 @@ public class UserDaoImpl implements UsersDao {
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(insert);
+            preparedStatement = connection.prepareStatement(INSERT);
             connection.setAutoCommit(false);
 
             preparedStatement.setInt(1,user.getId());
@@ -47,6 +50,7 @@ public class UserDaoImpl implements UsersDao {
 
 
         } catch (SQLException e) {
+            LOG.error("Can not create", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -60,7 +64,7 @@ public class UserDaoImpl implements UsersDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM users WHERE id=" + id);
+            resultSet = statement.executeQuery(READ + id);
             if(resultSet.next()){
                 User user = new User();
                 user.setId(resultSet.getInt("id"));
@@ -71,6 +75,7 @@ public class UserDaoImpl implements UsersDao {
                 return user;
             }
         } catch (SQLException e) {
+            LOG.error("Can not read", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -82,7 +87,7 @@ public class UserDaoImpl implements UsersDao {
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(update);
+            preparedStatement = connection.prepareStatement(UPDATE);
             preparedStatement.setString(1,user.getUsername());
             preparedStatement.setString(2,user.getEmail());
             preparedStatement.setInt(3, user.getPhone());
@@ -95,6 +100,7 @@ public class UserDaoImpl implements UsersDao {
             }
 
         } catch (SQLException e) {
+            LOG.error("Can not update", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;
@@ -107,12 +113,13 @@ public class UserDaoImpl implements UsersDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            int i = statement.executeUpdate("DELETE FROM users WHERE id=" + id);
+            int i = statement.executeUpdate(DELETE + id);
 
             if (i == 1){
                 return true;
             }
         } catch (SQLException e) {
+            LOG.error("Can not delete", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;
@@ -125,7 +132,7 @@ public class UserDaoImpl implements UsersDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM users");
+            resultSet = statement.executeQuery(SELECT_ALL);
             if(resultSet.next()){
                 User user = new User();
                 user.setId(resultSet.getInt("id"));
@@ -138,6 +145,7 @@ public class UserDaoImpl implements UsersDao {
             try {
                 throw new DAOException(e.getMessage(), e);
             } catch (DAOException ex) {
+                LOG.error("Can not select all users", e);
                 ex.printStackTrace();
             }
         }

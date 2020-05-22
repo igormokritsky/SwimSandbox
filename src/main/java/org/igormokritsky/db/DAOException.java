@@ -1,4 +1,4 @@
-package org.igormokritsky;
+package org.igormokritsky.db;
 
 public class DAOException extends Exception {
 

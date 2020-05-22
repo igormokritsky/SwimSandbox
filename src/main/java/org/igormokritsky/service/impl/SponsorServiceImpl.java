@@ -1,12 +1,13 @@
 package org.igormokritsky.service.impl;
 
-import org.igormokritsky.DAOException;
-import org.igormokritsky.ServiceException;
+import org.igormokritsky.db.DAOException;
+import org.igormokritsky.db.ServiceException;
 import org.igormokritsky.dao.SwimmerSponsorsDao;
+import org.igormokritsky.db.transactions.TransactionalOperation;
 import org.igormokritsky.entity.SwimmersSponsor;
 import org.igormokritsky.service.SponsorService;
-import org.igormokritsky.transactions.TransactionManager;
-import org.igormokritsky.transactions.*;
+import org.igormokritsky.db.transactions.TransactionManager;
+import org.igormokritsky.db.transactions.*;
 
 public class SponsorServiceImpl implements SponsorService {
 

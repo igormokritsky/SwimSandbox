@@ -2,43 +2,35 @@ package org.igormokritsky.entity;
 
 public class SwimmersSponsor extends Entity {
 
-    private Integer swimmer_id;
-    private Integer sponsor_id;
-    private Integer contract_amount;
+    private Integer swimmerId;
+    private Integer sponsorId;
+    private Integer contractAmount;
 
     public SwimmersSponsor(){
 
     }
 
-    public SwimmersSponsor(Integer id, Integer swimmer_id, Integer sponsor_id, Integer contract_amount) {
-        this.id = id;
-        this.swimmer_id = swimmer_id;
-        this.sponsor_id = sponsor_id;
-        this.contract_amount = contract_amount;
+    public Integer getSwimmerId() {
+        return swimmerId;
     }
 
-
-    public Integer getSwimmer_id() {
-        return swimmer_id;
+    public void setSwimmerId(Integer swimmerId) {
+        this.swimmerId = swimmerId;
     }
 
-    public void setSwimmer_id(Integer swimmer_id) {
-        this.swimmer_id = swimmer_id;
+    public Integer getSponsorId() {
+        return sponsorId;
     }
 
-    public Integer getSponsor_id() {
-        return sponsor_id;
+    public void setSponsorId(Integer sponsorId) {
+        this.sponsorId = sponsorId;
     }
 
-    public void setSponsor_id(Integer sponsor_id) {
-        this.sponsor_id = sponsor_id;
+    public Integer getContractAmount() {
+        return contractAmount;
     }
 
-    public Integer getContract_amount() {
-        return contract_amount;
-    }
-
-    public void setContract_amount(Integer contract_amount) {
-        this.contract_amount = contract_amount;
+    public void setContractAmount(Integer contractAmount) {
+        this.contractAmount = contractAmount;
     }
 }

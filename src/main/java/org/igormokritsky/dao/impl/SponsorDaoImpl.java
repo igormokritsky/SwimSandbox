@@ -1,7 +1,8 @@
 package org.igormokritsky.dao.impl;
 
-import org.igormokritsky.ConnectionHolder;
-import org.igormokritsky.DAOException;
+import org.apache.log4j.Logger;
+import org.igormokritsky.db.ConnectionHolder;
+import org.igormokritsky.db.DAOException;
 import org.igormokritsky.dao.SponsorsDao;
 import org.igormokritsky.entity.Sponsor;
 import java.sql.*;
@@ -9,13 +10,11 @@ import java.sql.*;
 public class SponsorDaoImpl implements SponsorsDao {
 
     private static SponsorDaoImpl sponsorDao;
-    final private static String insert = "INSERT INTO sponsors" + "(id, name) VALUES (?,?);";
-    final private static String update = "UPDATE sponsors SET name=? WHERE id=?";
-
-    public static void main(String[] args) {
-
-    }
-
+    private static final Logger LOG = Logger.getLogger(SponsorDaoImpl.class);
+    private static final String INSERT = "INSERT INTO sponsors (id, name) VALUES (?,?);";
+    private static final String UPDATE = "UPDATE sponsors SET name=? WHERE id=?";
+    private static final String READ = "SELECT * FROM sponsors WHERE id=";
+    private static final String DELETE = "DELETE FROM sponsors WHERE id=";
 
 
     static SponsorsDao getInstance(){
@@ -31,7 +30,7 @@ public class SponsorDaoImpl implements SponsorsDao {
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(insert);
+            preparedStatement = connection.prepareStatement(INSERT);
             connection.setAutoCommit(false);
 
             preparedStatement.setInt(1,sponsor.getId());
@@ -40,6 +39,7 @@ public class SponsorDaoImpl implements SponsorsDao {
             connection.commit();
 
         }catch (SQLException e) {
+            LOG.error("Can not create", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -53,7 +53,7 @@ public class SponsorDaoImpl implements SponsorsDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM sponsors WHERE id=" + id);
+            resultSet = statement.executeQuery(READ + id);
             connection.setAutoCommit(false);
             if(resultSet.next()){
                 Sponsor sponsor = new Sponsor();
@@ -62,6 +62,7 @@ public class SponsorDaoImpl implements SponsorsDao {
             }
             connection.commit();
         } catch (SQLException e) {
+            LOG.error("Can not read", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -73,7 +74,7 @@ public class SponsorDaoImpl implements SponsorsDao {
         PreparedStatement preparedStatement = null;
         try {
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(update);
+            preparedStatement = connection.prepareStatement(UPDATE);
             connection.setAutoCommit(false);
 
             preparedStatement.setString(1,sponsor.getName());
@@ -85,6 +86,7 @@ public class SponsorDaoImpl implements SponsorsDao {
             }
             connection.commit();
         }catch (SQLException e) {
+            LOG.error("Can not update", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;
@@ -97,12 +99,13 @@ public class SponsorDaoImpl implements SponsorsDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            int i = statement.executeUpdate("DELETE FROM sponsors WHERE id=" + id);
+            int i = statement.executeUpdate(DELETE + id);
 
             if (i == 1) {
                 return true;
             }
         }catch (SQLException e) {
+            LOG.error("Can not delete", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;

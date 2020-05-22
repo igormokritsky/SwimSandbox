@@ -1,9 +1,9 @@
-package org.igormokritsky.transactions;
+package org.igormokritsky.db.transactions;
 
 import org.apache.log4j.Logger;
-import org.igormokritsky.DAOException;
-import org.igormokritsky.ConnectionHolder;
-import org.igormokritsky.DBUtils;
+import org.igormokritsky.db.DAOException;
+import org.igormokritsky.db.ConnectionHolder;
+import org.igormokritsky.db.DBUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

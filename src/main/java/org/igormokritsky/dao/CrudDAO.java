@@ -1,6 +1,7 @@
 package org.igormokritsky.dao;
-import org.igormokritsky.DAOException;
 
+
+import org.igormokritsky.db.DAOException;
 
 public interface CrudDAO<T, PK> {
 

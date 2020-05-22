@@ -2,38 +2,34 @@ package org.igormokritsky.entity;
 
 public class SwimCompet extends Entity {
 
-    private Integer competition_id;
-    private Integer swimmer_id;
+    private Integer competitionId;
+    private Integer swimmerId;
     private Integer time;
 
     public SwimCompet() {
 
     }
 
-    public SwimCompet(Integer id, Integer competition_id, Integer swimmer_id, Integer time) {
-        this.id = id;
-        this.competition_id = competition_id;
-        this.swimmer_id = swimmer_id;
+    public SwimCompet(Integer competitionId, Integer swimmerId, Integer time) {
+        this.competitionId = competitionId;
+        this.swimmerId = swimmerId;
         this.time = time;
     }
 
-
-
-
-    public Integer getCompetition_id() {
-        return competition_id;
+    public Integer getCompetitionId() {
+        return competitionId;
     }
 
-    public void setCompetition_id(Integer competition_id) {
-        this.competition_id = competition_id;
+    public void setCompetitionId(Integer competitionId) {
+        this.competitionId = competitionId;
     }
 
-    public Integer getSwimmer_id() {
-        return swimmer_id;
+    public Integer getSwimmerId() {
+        return swimmerId;
     }
 
-    public void setSwimmer_id(Integer swimmer_id) {
-        this.swimmer_id = swimmer_id;
+    public void setSwimmerId(Integer swimmerId) {
+        this.swimmerId = swimmerId;
     }
 
     public Integer getTime() {

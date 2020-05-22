@@ -1,8 +1,9 @@
 package org.igormokritsky.dao.impl;
 
 import org.apache.log4j.Logger;
-import org.igormokritsky.ConnectionHolder;
-import org.igormokritsky.DAOException;
+import org.igormokritsky.db.ConnectionHolder;
+import org.igormokritsky.db.DBUtils;
+import org.igormokritsky.db.DAOException;
 import org.igormokritsky.entity.Competition;
 import org.igormokritsky.dao.CompetitionsDao;
 
@@ -12,63 +13,68 @@ public class CompetitonDaoImpl implements CompetitionsDao {
 
     private static CompetitonDaoImpl competitonDao;
     private static final Logger LOG = Logger.getLogger(CompetitonDaoImpl.class);
-    final private static String insert = "INSERT INTO competitions" + "(id, county_id, style_id, distance) VALUES (?,?,?,?);";
-    final private static String update = "UPDATE competitions SET county_id=?, style_id=?, distance=? WHERE id=?";
+    private static final String INSERT = "INSERT INTO competitions (id, county_id, style_id, distance) VALUES (?,?,?,?);";
+    private static final String UPDATE = "UPDATE competitions SET county_id=?, style_id=?, distance=? WHERE id=?";
+    private static final String READ = "SELECT * FROM competitions WHERE id=";
+    private static final String DELETE = "DELETE FROM competitions WHERE id=";
 
-    public static void main(String[] args) {
-
-    }
 
     static CompetitionsDao getInstance() {
         if (competitonDao == null) competitonDao = new CompetitonDaoImpl();
         return competitonDao;
     }
 
+
     private CompetitonDaoImpl() {
     }
 
     @Override
     public Integer create(Competition competition) throws DAOException {
-        Connection connection;
+        Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(insert);
+            preparedStatement = connection.prepareStatement(INSERT);
             connection.setAutoCommit(false);
 
             preparedStatement.setInt(1,competition.getId());
-            preparedStatement.setInt(2,competition.getCountry_id());
-            preparedStatement.setInt(3,competition.getStyle_id());
+            preparedStatement.setInt(2,competition.getCountryId());
+            preparedStatement.setInt(3,competition.getStyleId());
             preparedStatement.setInt(4,competition.getDistance());
 
             connection.commit();
 
         }catch (SQLException e) {
-            LOG.error("Can not read", e);
+            LOG.error("Can not create", e);
             throw new DAOException(e.getMessage(), e);
+        } finally {
+            DBUtils.rollback(connection);
         }
         return null;
     }
 
     @Override
     public Competition read(Integer id) throws DAOException {
-        Connection connection ;
+        Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
         try {
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM competitions WHERE id=" + id);
+            resultSet = statement.executeQuery(READ + id);
             connection.setAutoCommit(false);
             if(resultSet.next()){
                 Competition competition = new Competition();
                 competition.setId(resultSet.getInt("id"));
-                competition.setCountry_id(resultSet.getInt("country_id"));
-                competition.setStyle_id(resultSet.getInt("style_id"));
+                competition.setCountryId(resultSet.getInt("country_id"));
+                competition.setStyleId(resultSet.getInt("style_id"));
             }
             connection.commit();
         }catch (SQLException e) {
+            LOG.error("Can not read", e);
             throw new DAOException(e.getMessage(), e);
+        } finally {
+
         }
         return null;
     }
@@ -79,11 +85,11 @@ public class CompetitonDaoImpl implements CompetitionsDao {
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(update);
+            preparedStatement = connection.prepareStatement(UPDATE);
             connection.setAutoCommit(false);
 
-            preparedStatement.setInt(1,competition.getCountry_id());
-            preparedStatement.setInt(2,competition.getStyle_id());
+            preparedStatement.setInt(1,competition.getCountryId());
+            preparedStatement.setInt(2,competition.getStyleId());
             preparedStatement.setInt(3,competition.getDistance());
             preparedStatement.setInt(4,competition.getId());
 
@@ -93,7 +99,7 @@ public class CompetitonDaoImpl implements CompetitionsDao {
             }
             connection.commit();
         }catch (SQLException e) {
-            LOG.error("Can not read", e);
+            LOG.error("Can not update", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;
@@ -106,13 +112,13 @@ public class CompetitonDaoImpl implements CompetitionsDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            int i = statement.executeUpdate("DELETE FROM competitions WHERE id=" + id);
+            int i = statement.executeUpdate(DELETE + id);
 
             if (i == 1){
                 return true;
             }
         }catch (SQLException e) {
-            LOG.error("Can not read", e);
+            LOG.error("Can not delete", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;

@@ -4,57 +4,28 @@ public class Coach extends Entity {
 
     private String name;
     private String awards;
-    private Integer country_id;
-    private Integer user_id;
+    private Integer countryId;
+    private Integer userId;
+
+    public Coach(String name, String awards, Integer countryId, Integer userId) {
+        this.name = name;
+        this.awards = awards;
+        this.countryId = countryId;
+        this.userId = userId;
+    }
 
     public Coach() {
 
     }
 
-    public Integer getCountry_id() {
-        return country_id;
+    @Override
+    public int getId() {
+        return super.getId();
     }
 
-    public void setCountry_id(Integer country_id) {
-        this.country_id = country_id;
-    }
-
-    public Integer getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
-    }
-
-    public Coach(Integer id, String name, String awards, Integer country_id, Integer user_id) {
-        this.id = id;
-        this.name = name;
-        this.awards = awards;
-        this.country_id = country_id;
-        this.user_id = user_id;
-    }
-
-    public Coach(Integer id, String name, String awards) {
-        this.id = id;
-        this.name = name;
-        this.awards = awards;
-    }
-
-
-    public Coach(String name, String awards) {
-        this.name = name;
-        this.awards = awards;
-    }
-
-    public Coach(Integer id) {
-        this.id = id;
-    }
-
-
-
-    public void setId(Integer id) {
-        this.id = id;
+    @Override
+    public void setId(int id) {
+        super.setId(id);
     }
 
     public String getName() {
@@ -71,5 +42,21 @@ public class Coach extends Entity {
 
     public void setAwards(String awards) {
         this.awards = awards;
+    }
+
+    public Integer getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(Integer countryId) {
+        this.countryId = countryId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

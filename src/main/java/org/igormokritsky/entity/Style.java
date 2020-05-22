@@ -2,24 +2,21 @@ package org.igormokritsky.entity;
 
 public class Style extends Entity{
 
-    private String style_name;
+    private String styleName;
 
     public Style() {
 
     }
 
-    public Style(Integer id, String style_name) {
-        this.id = id;
-        this.style_name = style_name;
+    public Style(String styleName) {
+        this.styleName = styleName;
     }
 
-
-
-    public String getStyle_name() {
-        return style_name;
+    public String getStyleName() {
+        return styleName;
     }
 
-    public void setStyle_name(String style_name) {
-        this.style_name = style_name;
+    public void setStyleName(String styleName) {
+        this.styleName = styleName;
     }
 }

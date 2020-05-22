@@ -1,7 +1,8 @@
 package org.igormokritsky.dao.impl;
 
-import org.igormokritsky.ConnectionHolder;
-import org.igormokritsky.DAOException;
+import org.apache.log4j.Logger;
+import org.igormokritsky.db.ConnectionHolder;
+import org.igormokritsky.db.DAOException;
 import org.igormokritsky.dao.SwimmersDao;
 import org.igormokritsky.entity.Swimmer;
 import java.sql.*;
@@ -10,16 +11,15 @@ public class SwimmerDaoImpl implements SwimmersDao {
 
     private static SwimmerDaoImpl swimmerDao;
 
-    final private static String insert = "INSERT INTO swimmers" +
+    private static final Logger LOG = Logger.getLogger(SwimmerDaoImpl.class);
+    private static final String INSERT = "INSERT INTO swimmers" +
             "(id, name, age, sex, weight, height, user_id, country_id, coach_id) VALUES" +
             "(?,?,?,?,?,?,?,?,?);";
+    private static final String UPDATE = "UPDATE swimmers SET name=?, age=?, sex=?, weight=?, height=? WHERE id=?";
+    private static final String READ = "SELECT * FROM swimmers WHERE id=";
+    private static final String DELETE = "DELETE FROM swimmers WHERE id=";
 
-    final private static String update = "UPDATE swimmers SET name=?, age=?, sex=?, weight=?, height=? WHERE id=?";
 
-
-    public static void main(String[] args) {
-
-    }
 
     static SwimmersDao getInstance() {
         if(swimmerDao == null) swimmerDao = new SwimmerDaoImpl();
@@ -34,7 +34,7 @@ public class SwimmerDaoImpl implements SwimmersDao {
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(insert);
+            preparedStatement = connection.prepareStatement(INSERT);
             connection.setAutoCommit(false);
             preparedStatement.setInt(1,swimmer.getId());
             preparedStatement.setString(2,swimmer.getName());
@@ -42,13 +42,14 @@ public class SwimmerDaoImpl implements SwimmersDao {
             preparedStatement.setString(4,swimmer.getSex());
             preparedStatement.setInt(5,swimmer.getWeight());
             preparedStatement.setInt(6,swimmer.getHeight());
-            preparedStatement.setInt(7,swimmer.getUser_id());
-            preparedStatement.setInt(8,swimmer.getCountry_id());
-            preparedStatement.setInt(9,swimmer.getCoach_id());
+            preparedStatement.setInt(7,swimmer.getUserId());
+            preparedStatement.setInt(8,swimmer.getCountryId());
+            preparedStatement.setInt(9,swimmer.getCoachId());
 
             connection.commit();
 
         } catch (SQLException e) {
+            LOG.error("Can not create", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -62,7 +63,7 @@ public class SwimmerDaoImpl implements SwimmersDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM swimmers WHERE id=" + id);
+            resultSet = statement.executeQuery(READ + id);
             connection.setAutoCommit(false);
             if(resultSet.next()){
                 Swimmer swimmer = new Swimmer();
@@ -77,6 +78,7 @@ public class SwimmerDaoImpl implements SwimmersDao {
             connection.commit();
 
         }catch (SQLException e) {
+            LOG.error("Can not read", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -88,7 +90,7 @@ public class SwimmerDaoImpl implements SwimmersDao {
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(update);
+            preparedStatement = connection.prepareStatement(UPDATE);
             preparedStatement.setString(1,swimmer.getName());
             preparedStatement.setInt(2,swimmer.getAge());
             preparedStatement.setString(3,swimmer.getSex());
@@ -101,6 +103,7 @@ public class SwimmerDaoImpl implements SwimmersDao {
             }
 
         }catch (SQLException e) {
+            LOG.error("Can not update", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;
@@ -113,12 +116,13 @@ public class SwimmerDaoImpl implements SwimmersDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            int i = statement.executeUpdate("DELETE FROM swimmers WHERE id=" + id);
+            int i = statement.executeUpdate(DELETE + id);
 
             if (i == 1){
                 return true;
             }
         }catch (SQLException e) {
+            LOG.error("Can not delete", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;

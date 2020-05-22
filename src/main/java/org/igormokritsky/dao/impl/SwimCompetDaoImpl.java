@@ -1,7 +1,8 @@
 package org.igormokritsky.dao.impl;
 
-import org.igormokritsky.ConnectionHolder;
-import org.igormokritsky.DAOException;
+import org.apache.log4j.Logger;
+import org.igormokritsky.db.ConnectionHolder;
+import org.igormokritsky.db.DAOException;
 import org.igormokritsky.dao.SwimCompetsDao;
 import org.igormokritsky.entity.SwimCompet;
 import java.sql.*;
@@ -9,12 +10,11 @@ import java.sql.*;
 public class SwimCompetDaoImpl implements SwimCompetsDao {
 
     private static SwimCompetDaoImpl swimCompetDao;
-    final private static String insert = "INSERT INTO sponsors" + "(id, competition_id, swimmer_id, time) VALUES (?,?,?,?);";
-    final private static String update = "UPDATE sponsors SET competition_id=?, swimmer_id=?, time=? WHERE id=?";
-
-    public static void main(String[] args) {
-
-    }
+    private static final Logger LOG = Logger.getLogger(SwimCompetDaoImpl.class);
+    private static final String INSERT = "INSERT INTO swim_compet (id, competition_id, swimmer_id, time) VALUES (?,?,?,?);";
+    private static final String UPDATE = "UPDATE swim_compet SET competition_id=?, swimmer_id=?, time=? WHERE id=?";
+    private static final String READ = "SELECT * FROM swim_compet WHERE id=";
+    private static final String DELETE = "DELETE FROM swim_compet WHERE id=";
 
 
 
@@ -31,16 +31,17 @@ public class SwimCompetDaoImpl implements SwimCompetsDao {
         PreparedStatement preparedStatement = null;
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(insert);
+            preparedStatement = connection.prepareStatement(INSERT);
 
             connection.setAutoCommit(false);
             preparedStatement.setInt(1,swimCompet.getId());
-            preparedStatement.setInt(2,swimCompet.getCompetition_id());
-            preparedStatement.setInt(3,swimCompet.getSwimmer_id());
+            preparedStatement.setInt(2,swimCompet.getCompetitionId());
+            preparedStatement.setInt(3,swimCompet.getSwimmerId());
             preparedStatement.setInt(4,swimCompet.getTime());
 
             connection.commit();
         }catch (SQLException e) {
+            LOG.error("Can not create", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -54,18 +55,19 @@ public class SwimCompetDaoImpl implements SwimCompetsDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM swim_compet WHERE id=" + id);
+            resultSet = statement.executeQuery(READ + id);
             connection.setAutoCommit(false);
             if(resultSet.next()){
                 SwimCompet swimCompet = new SwimCompet();
                 swimCompet.setId(resultSet.getInt("id"));
-                swimCompet.setCompetition_id(resultSet.getInt("competition_id"));
-                swimCompet.setSwimmer_id(resultSet.getInt("swimmer_id"));
+                swimCompet.setCompetitionId(resultSet.getInt("competition_id"));
+                swimCompet.setSwimmerId(resultSet.getInt("swimmer_id"));
                 swimCompet.setTime(resultSet.getInt("time"));
             }
             connection.commit();
 
         }catch (SQLException e) {
+            LOG.error("Can not read", e);
             throw new DAOException(e.getMessage(), e);
         }
         return null;
@@ -78,10 +80,10 @@ public class SwimCompetDaoImpl implements SwimCompetsDao {
 
         try{
             connection = ConnectionHolder.getConnection();
-            preparedStatement = connection.prepareStatement(update);
+            preparedStatement = connection.prepareStatement(UPDATE);
             connection.setAutoCommit(false);
-            preparedStatement.setInt(1,swimCompet.getCompetition_id());
-            preparedStatement.setInt(2,swimCompet.getSwimmer_id());
+            preparedStatement.setInt(1,swimCompet.getCompetitionId());
+            preparedStatement.setInt(2,swimCompet.getSwimmerId());
             preparedStatement.setInt(3,swimCompet.getTime());
             preparedStatement.setInt(4,swimCompet.getId());
 
@@ -92,6 +94,7 @@ public class SwimCompetDaoImpl implements SwimCompetsDao {
             connection.commit();
 
         }catch (SQLException e) {
+            LOG.error("Can not update", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;
@@ -104,12 +107,13 @@ public class SwimCompetDaoImpl implements SwimCompetsDao {
         try{
             connection = ConnectionHolder.getConnection();
             statement = connection.createStatement();
-            int i = statement.executeUpdate("DELETE FROM swim_compet WHERE id=" + id);
+            int i = statement.executeUpdate(DELETE + id);
 
             if (i == 1){
                 return true;
             }
         } catch (SQLException e){
+            LOG.error("Can not delete", e);
             throw new DAOException(e.getMessage(), e);
         }
         return false;

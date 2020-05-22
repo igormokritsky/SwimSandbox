@@ -1,6 +1,6 @@
-package org.igormokritsky.transactions;
+package org.igormokritsky.db.transactions;
 
-import org.igormokritsky.DAOException;
+import org.igormokritsky.db.DAOException;
 
 public interface TransactionManager {
     <T> T executeTransaction(TransactionalOperation<T> operation) throws DAOException, DAOException;

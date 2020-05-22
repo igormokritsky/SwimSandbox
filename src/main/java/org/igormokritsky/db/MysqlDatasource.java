@@ -1,4 +1,4 @@
-package org.igormokritsky;
+package org.igormokritsky.db;
 
 import org.apache.log4j.Logger;
 
